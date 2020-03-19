@@ -21,7 +21,11 @@ require __DIR__ . '/../thinkphp/start.php';
 error_reporting(E_ALL ^ E_NOTICE);
 //输出错误
 ini_set('display_errors', 1);
-
+\think\Log::init([
+    'type' =>'File',
+    'path' =>LOG_PATH,
+    'level'=>['sql']
+]);
 //结束开发以后下面打开
 
 //error_reporting(E_ALL ^ E_NOTICE);

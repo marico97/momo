@@ -7,7 +7,6 @@
  */
 
 namespace app\lib\exception;
-use app\lib\exception\BaseException;
 
 class ParameterException extends BaseException
 {

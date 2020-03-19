@@ -9,14 +9,9 @@
 namespace app\api\controller;
 
 
-use think\Controller;
-
 class Token extends BaseController
 {
-//                $token = Token::createToken($mobile); //创建一个
-//$result = Token::checkToken($mobile); //解析token
-//           $token = Token::getToken();    //从http请求头获取
-//这些可以重写·因为加密规则不同
+
 
 
 

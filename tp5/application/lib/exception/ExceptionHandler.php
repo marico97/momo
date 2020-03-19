@@ -6,10 +6,9 @@
  * Time: 1:29
  */
 
-namespace app\lib\exception\ExceptionHandler;
+namespace app\lib\exception;
 
 
-use app\lib\exception\BaseException;
 use Exception;
 use think\exception\Handle;
 use think\Log;
