@@ -10,7 +10,6 @@ namespace app\api\Validate;
 
 
 use app\lib\exception\ParameterException;
-use think\Exception;
 use think\Request;
 use think\Validate;
 
@@ -26,23 +25,16 @@ class BaseValidate extends Validate
             $exception = new ParameterException([
                 'msg' =>is_array($this->error)?implode(';',$this->error):$this->error,
             ]);
-//        }
-//        $result = $this->check($params);
-//        if(!$result){
-//            $e = new ParameterException([
-//                'msg' => $this->error,
-//            ]);
 
-            $as =json_decode(json_encode($exception,true));
-            $as =get_object_vars($as);
-            var_dump($as);die;
+//            $as =json_decode(json_encode($exception,true));
+//            $as =get_object_vars($as);
+//            echo  (json_encode($as));die;
 //            var_dump($as);die;
-//            throw $as;
-//            $error = $this->error;
-//            var_dump($error);
+            throw  $exception;
+
         }
 
-            return true;
+            return $params;
 
 
 }}

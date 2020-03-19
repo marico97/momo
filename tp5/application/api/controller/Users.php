@@ -2,21 +2,23 @@
 namespace app\api\controller;
 use app\api\Validate\UsersValidate;
 use think\Db;
+use app\api\Model\Users as UsersModel;
 class Users extends BaseController
 {
-    /**
-     *给指定手机号发送验证码
-     * @url /registPag
-     * @http POST
-     * TODO:return
-     **/
+//                $token = Token::createToken($mobile); //创建一个
+//$result = Token::checkToken($mobile); //解析token
+//           $token = Token::getToken();    //从http请求头获取
+
+
     public function registPag()//注册页面验证
     {
         $data = input('post.');
-
         if($data)
         {
-            $res = Db::name('users')->where($data)->find(); //待优化做成model映射orm
+            $res = UsersModel::checkRegistMsg($data);
+//            return $res;
+//            ->toArray();返回为对象的时候  用来激活所有获取器
+//            $res = UsersModel::with(['items','items.img'])->get($data);//关联查询以及 关联嵌套查询，嵌套的items模型中要定义belongsto img
             if ($res)
             {
                 return parent::NoNoNo("已存在");
@@ -26,7 +28,27 @@ class Users extends BaseController
         }else{
             return parent::NoNoNo("请输入内容");
         }
+
     }
+
+//    public function codejudge($code,$telphone) //不需要了 没有验证码表
+//    {//用于校验验证码是否正确
+//            if(isset($code,$telphone))
+//            {
+//            $info = Db::name('?')
+//                      ->where('telphone',$telphone)
+//                      ->where('status',0)
+//                      ->find();
+//            if(abs($info['时间戳'])-time()<=300)
+//                {//十分钟内 有效
+//            Db::name('?')->delete($info);
+//            return parrent::ojbk('验证成功');
+//            }
+//            return parrent::NoNoNo('验证码失效');
+//        }else{
+//            return parrent::NoNoNo('手机号及验证码错误');
+//        }
+//    }
 
 
     public function upload()//图片上传接口
@@ -37,95 +59,48 @@ class Users extends BaseController
         }
 
     }
-
-
     //注册页面验证信息
     public function register()//注册->验证->入库
     {
-        //获取提交数据
-        $data = input('post.');
-        //检测器校验数据
-        (new UsersValidate())->gocheck();
-                //拼接注册数据
-                //检测爱好是否为数组,是则转换为字符串不是则非法操作
-                if (isset($data['hobby'])) {
-                    if (is_array($data['hobby'])) {
-                        $hobby = implode(",", $data['hobby']);
-                    }else{
-                        return parent::NoNoNo('非数组');
-                    }
-                }
-                if (empty($data['belonguid'])) {//推荐码默认为空
-                    $data['belonguid'] = null;
-                }
+        $data = (new UsersValidate())->gocheck();
 
-                $password=md5($data['password']);  //执行MD5散列
-
-
-                $data['applydate'] = date('Y-m-d H:i:s',time());
-                //拼接数据
-                $arr = [
-                    'username'  => $data['username'],
-                    'password'  => $password,//不加盐就直接md5
-                    'realname'  => $data['realname'],
-                    'email'     => $data['email'],
-                    'telphone'  => $data['telphone'],
-                    'idnumber'  => $data['idnumber'],
-                    'address'   => $data['address'],
-                    'hobby'     => $hobby,
-                    'belonguid' => $data['belonguid'],
-                    'image'     => $data['image'],
-                    'applydate'=> $data['applydate'],
-                ];
-                //插入数据库
-                $result = Db::name('users')->insert($arr);
-                //存数据库
-                $uid = Db::name('users')->
-                where('username',$data['username'])->
-                field('uid')->find();
-
-                $token = md5($data['username'].time());//生成token存入
-                $result = Db::name('users')->where('uid',$uid['uid'])
-                         ->setField(['token' => $token]);
-                if ($result){
-                return parent::ojbk('注册成功');
-        } else {
+       $result = UsersModel::registerUser($data);
+        if ($result){
+            return parent::ojbk('注册成功');
+        }
+        else {
             return parent::NoNoNo('注册失败,联系客服');
         }
     }
 
-
-    public function login()//email和password登录
+    public function login()
     {
 
         $input_info = input('post.');
 
         if ($input_info['email']){
-        $username = Db::name('users')->
-        where('email',$input_info['email'])->find();
-        if (!$username){
-            return parent::NoNoNo('email不存在');
-        }
+            $username = Db::name('users')->
+            where('email',$input_info['email'])->find();
+            if (!$username){
+                return parent::NoNoNo('email不存在');
+            }
 
             $user = Db::name('users')->
             where('email',$input_info['email'])->
             where('password',md5($input_info['password']))
-                ->find();
+                      ->find();
 
-        if ($user){
-            $a = Db::name('users')->where('email',$input_info['email'])->update(
-                ['lang'=>$input_info['lang']]);
-        return parent::ojbk($user['token']);
+            if ($user){
+                $a = Db::name('users')->where('email',$input_info['email'])->update(
+                    ['lang'=>$input_info['lang']]);
+                return parent::ojbk($user['token']);
+            }
+            else{
+                return parent::NoNoNo('密码错误');
+            }
         }
-        else{
-            return parent::NoNoNo('密码错误');
-        }
-      }
     }
-
-
-
-    public function getEmail()//检查email是否存在
+    public function getEmail()
     {
 
         $input_info = input('post.');

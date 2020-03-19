@@ -9,7 +9,8 @@
 namespace app\api\model;
 
 
-class Verification
+class Verification extends BaseModel
 {
+    protected $table ='ty_sms';
 
 }

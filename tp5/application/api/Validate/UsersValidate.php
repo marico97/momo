@@ -6,7 +6,6 @@
  * Time: 16:18
  */
 namespace app\api\Validate;
-use app\api\Validate\BaseValidate;
 class UsersValidate extends BaseValidate
 
 {
@@ -25,9 +24,12 @@ class UsersValidate extends BaseValidate
         'telphone'=> 'require|unique:users|number|length:11',
         'idnumber'=>'require|unique:users',
         'address'=> 'require',
+        'image'=>'require',
         'hobby'=>'require',
     ];
-
+    protected $scene = [
+        'edit'  =>  ['username','require|unique:users'],
+    ];
 
     /**
      * 定义错误信息
