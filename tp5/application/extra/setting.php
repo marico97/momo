@@ -6,5 +6,9 @@
  * Time: 1:42
  */
  return [
-     'img_prefix' => 'http://www.mo.com/images/'//后面挂自己服务器域名 图片必须放到public/images
+     'img_prefix' => 'http://www.mo.com/images/',//后面挂自己服务器域名 图片必须放到public/images
+     'token_expire_in' => 7200,
+     'token_salt' => 'moqintao'
+
+
  ];

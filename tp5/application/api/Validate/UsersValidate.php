@@ -28,7 +28,7 @@ class UsersValidate extends BaseValidate
         'hobby'=>'require',
     ];
     protected $scene = [
-        'edit'  =>  ['username','require|unique:users'],
+        'registPag'  =>  ['username','require|unique:users|isNotEmpty'],
     ];
 
     /**

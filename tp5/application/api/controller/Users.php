@@ -13,20 +13,20 @@ class Users extends BaseController
     public function registPag()//注册页面验证
     {
         $data = input('post.');
-        if($data)
+        if(in_array('', $data))
         {
+            return parent::NoNoNo("请输入内容");
+        }else{
             $res = UsersModel::checkRegistMsg($data);
-//            return $res;
 //            ->toArray();返回为对象的时候  用来激活所有获取器
 //            $res = UsersModel::with(['items','items.img'])->get($data);//关联查询以及 关联嵌套查询，嵌套的items模型中要定义belongsto img
+//            $res = UsersModel::where($data)->all([],['items','items.img']);
             if ($res)
             {
                 return parent::NoNoNo("已存在");
             }else {
                 return parent::ojbk("可以创建");
             }
-        }else{
-            return parent::NoNoNo("请输入内容");
         }
 
     }
